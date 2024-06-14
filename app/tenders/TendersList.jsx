@@ -94,18 +94,20 @@ export default function TendersList() {
                 />
             </div>
             {filteredTenders.map((tender) => (
-                <div key={tender.id_tenderdetails} className='card my-5'>
-                    <h3>Institution : {tender.pename}</h3>
-                    <p>Title : {tender.title}</p>
-                    <p>Tender Type : {tender.procurementmethod}</p>
-                    <p>Publish Date : {tender.publisheddate}</p>
-                    <p>Close Date : {tender.closedate}</p>
-                    <button
-                        className="mt-2 w-full flex justify-center text-white bg-blue-500 hover:bg-blue-600 rounded py-2 px-4"
-                        onClick={() => handleButtonClick(tender.id_tenderdetails)}
-                    >
-                        View
-                    </button>
+                <div key={tender.id_tenderdetails} className='card'>
+                    <div className='px-4'>
+                        <h3>Institution : {tender.pename}</h3>
+                        <p>Title : {tender.title}</p>
+                        <p>Tender Type : {tender.procurementmethod}</p>
+                        <p>Publish Date : {tender.publisheddate}</p>
+                        <p>Close Date : {tender.closedate}</p>
+                        <button
+                            className="mt-2 w-full flex justify-center text-white bg-blue-500 hover:bg-blue-600 rounded py-2 px-4"
+                            onClick={() => handleButtonClick(tender.id_tenderdetails)}
+                        >
+                            View
+                        </button>
+                    </div>
                 </div>
             ))}
         </main>

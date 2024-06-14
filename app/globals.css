@@ -15,7 +15,7 @@ h2 {
 }
 
 main {
-  @apply max-w-5xl my-12 mx-auto px-8 sm:px-10;
+  @apply max-w-5xl my-12 mx-auto px-4 sm:px-10;
 }
 
 main>h2 {
