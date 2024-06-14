@@ -6,7 +6,7 @@
 /* base styles */
 body {
   background: #ebf0fa;
-  @apply text-gray-500 m-8;
+  @apply text-gray-500 m-1;
 }
 
 h1,
@@ -15,7 +15,7 @@ h2 {
 }
 
 main {
-  @apply max-w-5xl my-12 mx-auto px-8;
+  @apply max-w-5xl my-12 mx-auto px-8 sm:px-10;
 }
 
 main>h2 {
@@ -87,7 +87,7 @@ form button {
 
 /* card styles */
 .card {
-  @apply bg-white shadow-sm rounded-md py-3 px-4 my-4 relative overflow-hidden;
+  @apply bg-white shadow-sm rounded-md py-3 px-0 my-4 relative overflow-hidden;
 }
 
 .card h3 {
