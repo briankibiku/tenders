@@ -72,7 +72,9 @@ export default function TendersList() {
             setFilteredTenders(tenders)
         } else {
             const filtered = tenders.filter(tender =>
-                tender.pename.toLowerCase().includes(query)
+                tender.pename.toLowerCase().includes(query) ||
+                tender.title.toLowerCase().includes(query) ||
+                tender.procurementmethod.toLowerCase().includes(query)
             )
             setFilteredTenders(filtered)
         }
