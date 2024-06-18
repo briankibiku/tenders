@@ -1,6 +1,7 @@
 "use client";
 import { notFound, useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
+import Loading from "../loading";
 
 // Fetch tenders function
 async function fetchTenders() {
@@ -18,17 +19,26 @@ export default function TendersList() {
   const [tenders, setTenders] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredTenders, setFilteredTenders] = useState([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   // Fetch tenders when the component mounts
   useEffect(() => {
-    async function getTenders() {
+    getTenders();
+  }, []);
+
+  const getTenders = async () => {
+    setLoading(true);
+    try {
       const tendersData = await fetchTenders();
       setTenders(tendersData);
       setFilteredTenders(tendersData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
     }
-    getTenders();
-  }, []);
+  };
 
   // Handle search query change
   const handleSearchChange = (e) => {
@@ -49,6 +59,9 @@ export default function TendersList() {
   const handleButtonClick = (id_tenderdetails) => {
     router.push(`https://tenders.go.ke/OneTender/${id_tenderdetails}`);
   };
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <main>
