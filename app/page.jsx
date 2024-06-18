@@ -1,4 +1,3 @@
-import Link from "next/link";
 import TendersList from "./tenders/TendersList";
 
 export default function Home() {
@@ -9,8 +8,6 @@ export default function Home() {
       <div className="card">
         <TendersList />
       </div>
-
     </main>
-  )
+  );
 }
-
