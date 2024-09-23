@@ -2,21 +2,26 @@
 import { notFound, useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import Loading from "../loading";
+import TendersDisplay from "./TendersDisplay";
+import Pagination from "./Pagination";
 
 // Fetch tenders function
-async function fetchTenders() {
-  const resp = await fetch(
-    "https://tenders.go.ke/api/TenderDisplay/OpenTenders/Open"
-  );
-  if (!resp.ok) {
-    notFound();
-  }
-  return resp.json();
-}
+// async function fetchTenders() {
+//   const resp = await fetch(
+//     // "https://tenders.go.ke/api/TenderDisplay/OpenTenders/Open"
+//     "https://tenders.go.ke/api/active-tenders?search=&perpage=10&sortby=&order=asc&page=1&tender_ref=&title=&pe:name=&procurementMethod:title=&procurementCategory:title=&close_at=&published_at=&addendum_added="
+//   );
+//   if (!resp.ok) {
+//     notFound();
+//   }
+//   return resp.json();
+// }
 
 // TendersList component
 export default function TendersList() {
   const [tenders, setTenders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredTenders, setFilteredTenders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,21 +29,61 @@ export default function TendersList() {
 
   // Fetch tenders when the component mounts
   useEffect(() => {
-    getTenders();
-  }, []);
+    // getTenders();
+    fetchTenders(currentPage);
+  }, [currentPage]);
 
-  const getTenders = async () => {
+  const fetchTenders = async (page = 1) => {
     setLoading(true);
     try {
-      const tendersData = await fetchTenders();
-      setTenders(tendersData);
-      setFilteredTenders(tendersData);
+      const resp = await fetch(
+        // `https://tenders.go.ke/api/active-tenders?perpage=10&page=${page}`
+        `https://tenders.go.ke/api/active-tenders?search=&perpage=10&sortby=&order=asc&page=${page}&tender_ref=&title=&pe:name=&procurementMethod:title=&procurementCategory:title=&close_at=&published_at=&addendum_added=`
+      );
+      if (!resp.ok) {
+        throw new Error("Failed to fetch tenders");
+      }
+      const data = await resp.json();
+      setTenders(data.data); // Tenders are usually in data.data
+      setTotalPages(data.last_page); // Total pages from the API
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching tenders:", error);
     } finally {
       setLoading(false);
     }
   };
+  const fetchDisposalTenders = async (page = 1) => {
+    setLoading(true);
+    try {
+      const resp = await fetch(
+        // `https://tenders.go.ke/api/active-tenders?perpage=10&page=${page}`
+        `https://tenders.go.ke/api/active-tenders?search=&perpage=10&sortby=&order=asc&page=${page}&tender_ref=&title=disposal&pe:name=&procurementMethod:title=&procurementCategory:title=&close_at=&published_at=&addendum_added=`
+      );
+      if (!resp.ok) {
+        throw new Error("Failed to fetch tenders");
+      }
+      const data = await resp.json();
+      setTenders(data.data); // Tenders are usually in data.data
+      setTotalPages(data.last_page); // Total pages from the API
+    } catch (error) {
+      console.error("Error fetching tenders:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // const getTenders = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const tendersData = await fetchTenders();
+  //     setTenders(tendersData);
+  //     setFilteredTenders(tendersData);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   // Handle search query change
   const handleSearchChange = (e) => {
@@ -57,7 +102,7 @@ export default function TendersList() {
     }
   };
   const handleButtonClick = (id_tenderdetails) => {
-    router.push(`https://tenders.go.ke/OneTender/${id_tenderdetails}`);
+    fetchDisposalTenders;
   };
   if (loading) {
     return <Loading />;
@@ -66,15 +111,24 @@ export default function TendersList() {
   return (
     <main>
       <div className="search-container">
-        <input
-          type="text"
-          placeholder="Search by institution name, tender type, title"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className="border border-gray-600 rounded-lg p-2 w-full focus:outline-none focus:border-blue-500"
+        <button
+          className="mt-2  flex justify-center text-white bg-blue-500 hover:bg-blue-600 rounded py-2 px-4"
+          onClick={() => fetchDisposalTenders()}
+        >
+          Fetch Disposal Tenders
+        </button>
+      </div>
+
+      <div>
+        <TendersDisplay tenders={tenders} loading={loading} />
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
         />
       </div>
-      {filteredTenders.map((tender) => (
+      {/* {filteredTenders.map((tender) => (
         <div key={tender.id_tenderdetails} className="card">
           <div className="px-4">
             <h3>Institution : {tender.pename}</h3>
@@ -90,7 +144,7 @@ export default function TendersList() {
             </button>
           </div>
         </div>
-      ))}
+      ))} */}
     </main>
   );
 }
